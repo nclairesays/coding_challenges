@@ -28,14 +28,13 @@ const postAnswers = async (datasetId, dealers) => {
     for (let dealer in dealers) {
         data.push(dealers[dealer])
     }
-    // ANSWER LOGGED:
-    console.log("MY ANSWER/PAYLOAD/BODY:", JSON.stringify({"dealers": data }))
-    
+
+    console.log("ANSWER/PAYLOAD:", JSON.stringify({"dealers": data }))
     renderOnPage(datasetId, data)
 
     return await fetch(`${api}/${datasetId}/answer`, {
         method: "POST",
-        // I am getting CORS errors. But when I add the mode: no-cors, it gives me a Media Type error. 
+        // I'm currently getting CORS errors; error suggested that I add mode: no-cors. When I do, it then gives me a Media Type error. Commenting out mode for now...
         // mode: "no-cors", 
         headers: {
             "content-type": "application/json",
@@ -44,13 +43,18 @@ const postAnswers = async (datasetId, dealers) => {
         body: JSON.stringify({ "dealers": data })
     })
     .then(res => res.json())    
-    // .then(res => console.log(res))
+    // POST RESPONSE LOGGED: 
+    .then(res => console.log("POST RESPONSE: ", res))
 }
 
-const renderOnPage = (datasetId, data) => {
-    document.querySelector('#answer').innerHTML = `DatasetId:${datasetId} <br><br>` + JSON.stringify({"dealers": data})
-}
- 
+const renderOnPage = (datasetId, data) => { document.querySelector('#answer').innerHTML = `DatasetId:${datasetId} <br><br>` + JSON.stringify({"dealers": data}) }
+
+const vehicleObject = ({vehicleId, year, make, model}) => ({
+    "vehicleId": vehicleId,
+    "year": year,
+    "make": make,
+    "model": model
+})
 
 const render = async () => {
     try {
@@ -62,25 +66,15 @@ const render = async () => {
             vehicleIds.map( async vehicleID => {
                 await getVehicleInfo(datasetId, vehicleID)
                 .then( async res => {
-                    const { vehicleId, year, make, model, dealerId} = res
+                    const { dealerId } = res
                     const dealerName = await getDealerInfo(datasetId, dealerId)
                     if (dealers[dealerId]) {
-                        dealers[dealerId].vehicles.push({
-                        "vehicleId": vehicleId,
-                        "year": year,
-                        "make": make,
-                        "model": model
-                        })
+                        dealers[dealerId].vehicles.push(vehicleObject(res))
                     } else {
                         dealers[dealerId] = {
                             dealerId: dealerId,
                             name: dealerName,
-                            vehicles: [{
-                                "vehicleId": vehicleId,
-                                "year": year,
-                                "make": make,
-                                "model": model
-                            }]
+                            vehicles: [vehicleObject(res)]
                         }
                     }
                 })
