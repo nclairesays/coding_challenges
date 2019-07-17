@@ -12,7 +12,6 @@ const postAnswers = async (datasetId, dealers) => {
 
 	return await fetch(`${api}/${datasetId}/answer`, {
 		method: 'POST',
-		// mode: "no-cors",		// I'm currently getting CORS errors; error suggested that I add mode: no-cors. When I do, it then gives me a Media Type error. Commenting out mode for now...
 		headers: {
 			'content-type': 'application/json',
 			accept: 'application/json',
