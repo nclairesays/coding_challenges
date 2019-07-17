@@ -1,7 +1,7 @@
 {
   "name": "client",
   "version": "1.0.0",
-  "description": "* I made an html file that will display the results, however, it cannot post through the browser because of CORS. (Yes, I was testing in the browser and forgot that that wasn't a requirement.)\r * Otherwise, the program will also run through just the index.js",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js"
